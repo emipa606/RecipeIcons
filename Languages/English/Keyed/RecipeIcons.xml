@@ -1,16 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
   <RecipeIconsTitle>Recipe Icons</RecipeIconsTitle>
-  
   <RecipeIconsEnableTooltipName>Enable tooltips</RecipeIconsEnableTooltipName>
   <RecipeIconsEnableTooltipDesc>Show a window with extended recipe info when hovering over a bill.</RecipeIconsEnableTooltipDesc>
-  
   <RecipeIconsDisableSmallMenusName>Disable small float menus</RecipeIconsDisableSmallMenusName>
   <RecipeIconsDisableSmallMenusDesc>Prevent menus from switching into small mode when they have too many items.</RecipeIconsDisableSmallMenusDesc>
-  
   <RecipeIconsShowModName>Show info: mod</RecipeIconsShowModName>
   <RecipeIconsShowModDesc>Show the mod that item is from in its tooltip.</RecipeIconsShowModDesc>
-  
   <RecipeIconsRecipeTooltipConsumes>Consumes:</RecipeIconsRecipeTooltipConsumes>
   <RecipeIconsRecipeTooltipProduces>Produces:</RecipeIconsRecipeTooltipProduces>
   <RecipeIconsRecipeTooltipExample>example for</RecipeIconsRecipeTooltipExample>
@@ -19,5 +15,4 @@
   <RecipeIconsRecipeTooltipIsAnyOf>is any of:</RecipeIconsRecipeTooltipIsAnyOf>
   <RecipeIconsRecipeTooltipWorkToMake>Work to make: {0}</RecipeIconsRecipeTooltipWorkToMake>
   <RecipeIconsRecipeTooltipWorkToMakeWithSpeed>Work to make: {0} ({1})</RecipeIconsRecipeTooltipWorkToMakeWithSpeed>
-  
 </LanguageData>
