@@ -1,5 +1,8 @@
 # Changelog for RecipeIcons
 
+1.4.2 - Removed the duplicated icon-code that is now in vanilla
+
+
 1.4.1 - Updated to 1.4.
 Used DeepL to update translations for ChineseSimplified, French, German, Russian
 
