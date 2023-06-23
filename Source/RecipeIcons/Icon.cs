@@ -73,9 +73,9 @@ public class Icon
         texture2D = thing.uiIcon == BaseContent.BadTex ? null : thing.uiIcon;
         textureColor = thing.uiIconColor;
 
-        if (texture2D == null && corpseMap.ContainsKey(thing))
+        if (texture2D == null && corpseMap.TryGetValue(thing, out var value))
         {
-            thingDef = thing = corpseMap[thing];
+            thingDef = thing = value;
             texture2D = thing.uiIcon == BaseContent.BadTex ? null : thing.uiIcon;
         }
 

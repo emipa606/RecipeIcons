@@ -1,5 +1,8 @@
 # Changelog for RecipeIcons
 
+1.4.3 - Icons should not be shown outside the item-lists
+
+
 1.4.2 - Removed the duplicated icon-code that is now in vanilla
 
 
