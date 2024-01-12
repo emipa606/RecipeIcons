@@ -21,7 +21,7 @@ internal class RecipeTooltip
     private static readonly int iconSize = 28;
 
     private readonly TextLayout layout = new TextLayout();
-    private readonly List<IconExplanation> needExplain = new List<IconExplanation>();
+    private readonly List<IconExplanation> needExplain = [];
 
     private static string RecipeKey(RecipeDef def)
     {
@@ -54,6 +54,15 @@ internal class RecipeTooltip
         return recipeDatabase.TryGetValue(RecipeKey(option)) ?? recipeDatabase.TryGetValue(RecipeKeyFallback(option));
     }
 
+    public static bool IsRecipe(RecipeDef recipe)
+    {
+        return recipeDatabase.Values.Contains(recipe);
+    }
+
+    public static bool IsRecipe(FloatMenuOption option)
+    {
+        return FindRecipe(option) != null;
+    }
 
     public void ShowAt(FloatMenuOption option, float x, float y)
     {

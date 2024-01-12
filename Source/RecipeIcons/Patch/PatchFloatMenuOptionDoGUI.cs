@@ -5,13 +5,18 @@ using Verse;
 namespace RecipeIcons.Patch;
 
 [HarmonyPatch(typeof(FloatMenuOption), "DoGUI")]
-internal class PatchFloatMenuOptionDoGUI
+internal static class PatchFloatMenuOptionDoGUI
 {
     private static readonly RecipeTooltip tooltip = new RecipeTooltip();
 
     private static void Postfix(FloatMenuOption __instance, Rect rect)
     {
         if (!RecipeIcons.settings.enableTooltip)
+        {
+            return;
+        }
+
+        if (!RecipeTooltip.IsRecipe(__instance))
         {
             return;
         }

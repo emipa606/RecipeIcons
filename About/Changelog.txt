@@ -1,5 +1,8 @@
 # Changelog for RecipeIcons
 
+1.4.4 - Fixed the duplicate toolkit issue
+
+
 1.4.3 - Icons should not be shown outside the item-lists
 
 
