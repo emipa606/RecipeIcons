@@ -10,16 +10,16 @@ namespace RecipeIcons;
 [StaticConstructorOnStartup]
 public class Icon
 {
-    public static Icon missing = new Icon("RecipeIcons/Missing", true);
-    public static Icon A = new Icon("RecipeIcons/A", true);
-    public static Icon B = new Icon("RecipeIcons/B", true);
-    public static Icon C = new Icon("RecipeIcons/C", true);
-    public static Icon X = new Icon("RecipeIcons/X", true);
-    public static Icon More = new Icon("RecipeIcons/More");
+    public static readonly Icon missing = new Icon("RecipeIcons/Missing", true);
+    public static readonly Icon A = new Icon("RecipeIcons/A", true);
+    public static readonly Icon B = new Icon("RecipeIcons/B", true);
+    public static readonly Icon C = new Icon("RecipeIcons/C", true);
+    public static readonly Icon X = new Icon("RecipeIcons/X", true);
+    public static readonly Icon More = new Icon("RecipeIcons/More");
     private static readonly Texture2D human = ContentFinder<Texture2D>.Get("RecipeIcons/Human");
 
     private static readonly Dictionary<string, Icon> mapStuffCategoryIcons = new Dictionary<string, Icon>();
-    public static Dictionary<ThingDef, ThingDef> corpseMap = new Dictionary<ThingDef, ThingDef>();
+    public static readonly Dictionary<ThingDef, ThingDef> corpseMap = new Dictionary<ThingDef, ThingDef>();
 
     private static readonly Rect rect0011 = new Rect(0f, 0f, 1f, 1f);
 
@@ -33,13 +33,13 @@ public class Icon
     private static FieldInfo fieldStuffCategoriesToAllow =
         typeof(ThingFilter).GetField("stuffCategoriesToAllow", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    public bool isMissing;
+    public readonly bool isMissing;
 
-    public Material material;
-    public Texture texture;
-    public Texture2D texture2D;
+    public readonly Material material;
+    public readonly Texture texture;
+    public readonly Texture2D texture2D;
+    public readonly ThingDef thingDef;
     public Color textureColor;
-    public ThingDef thingDef;
 
     static Icon()
     {
@@ -166,9 +166,7 @@ public class Icon
             return missing;
         }
 
-        Icon res;
-
-        if (map.TryGetValue(def, out res))
+        if (map.TryGetValue(def, out var res))
         {
             return res;
         }

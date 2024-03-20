@@ -10,12 +10,16 @@ internal class PatchHealthCardUtility
 {
     private static FloatMenuOption Postfix(FloatMenuOption option, RecipeDef recipe)
     {
-        if (option.shownItem != null)
+        var shownItemField = AccessTools.Field(typeof(FloatMenuOption), "shownItem");
+        var itemIconField = AccessTools.Field(typeof(FloatMenuOption), "itemIcon");
+        var drawPlaceHolderIconField = AccessTools.Field(typeof(FloatMenuOption), "drawPlaceHolderIcon");
+
+        if (shownItemField.GetValue(option) != null)
         {
             return option;
         }
 
-        if (option.itemIcon != null)
+        if (itemIconField.GetValue(option) != null)
         {
             return option;
         }
@@ -31,8 +35,8 @@ internal class PatchHealthCardUtility
             return option;
         }
 
-        option.shownItem = icon.thingDef;
-        option.drawPlaceHolderIcon = false;
+        shownItemField.SetValue(option, icon.thingDef);
+        drawPlaceHolderIconField.SetValue(option, false);
         option.iconColor = Color.white;
         option.forceThingColor = Color.white;
 
