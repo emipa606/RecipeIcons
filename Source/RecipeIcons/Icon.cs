@@ -10,22 +10,22 @@ namespace RecipeIcons;
 [StaticConstructorOnStartup]
 public class Icon
 {
-    public static readonly Icon missing = new Icon("RecipeIcons/Missing", true);
-    public static readonly Icon A = new Icon("RecipeIcons/A", true);
-    public static readonly Icon B = new Icon("RecipeIcons/B", true);
-    public static readonly Icon C = new Icon("RecipeIcons/C", true);
-    public static readonly Icon X = new Icon("RecipeIcons/X", true);
-    public static readonly Icon More = new Icon("RecipeIcons/More");
+    public static readonly Icon Missing = new("RecipeIcons/Missing", true);
+    private static readonly Icon a = new("RecipeIcons/A", true);
+    private static readonly Icon b = new("RecipeIcons/B", true);
+    private static readonly Icon c = new("RecipeIcons/C", true);
+    private static readonly Icon x = new("RecipeIcons/X", true);
+    public static readonly Icon More = new("RecipeIcons/More");
     private static readonly Texture2D human = ContentFinder<Texture2D>.Get("RecipeIcons/Human");
 
-    private static readonly Dictionary<string, Icon> mapStuffCategoryIcons = new Dictionary<string, Icon>();
-    public static readonly Dictionary<ThingDef, ThingDef> corpseMap = new Dictionary<ThingDef, ThingDef>();
+    private static readonly Dictionary<string, Icon> mapStuffCategoryIcons = new();
+    public static readonly Dictionary<ThingDef, ThingDef> CorpseMap = new();
 
-    private static readonly Rect rect0011 = new Rect(0f, 0f, 1f, 1f);
+    private static readonly Rect rect0011 = new(0f, 0f, 1f, 1f);
 
-    private static readonly Dictionary<Def, Icon> map = new Dictionary<Def, Icon>();
+    private static readonly Dictionary<Def, Icon> map = new();
 
-    private static readonly Dictionary<string, Icon> mapCats = new Dictionary<string, Icon>();
+    private static readonly Dictionary<string, Icon> mapCats = new();
 
     private static readonly FieldInfo fieldCategories =
         typeof(ThingFilter).GetField("categories", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -35,11 +35,11 @@ public class Icon
 
     public readonly bool isMissing;
 
-    public readonly Material material;
-    public readonly Texture texture;
-    public readonly Texture2D texture2D;
+    private readonly Material material;
+    private readonly Texture texture;
+    private readonly Texture2D texture2D;
+    private readonly Color textureColor;
     public readonly ThingDef thingDef;
-    public Color textureColor;
 
     static Icon()
     {
@@ -56,13 +56,13 @@ public class Icon
         mapStuffCategoryIcons["Gemstones"] =
             new Icon(ContentFinder<Texture2D>.Get("RecipeIcons/Categories/Gemstone"), true);
 
-        foreach (var thing in DefDatabase<ThingDef>.AllDefs.Where(x => x.race?.corpseDef != null))
+        foreach (var thing in DefDatabase<ThingDef>.AllDefs.Where(def => def.race?.corpseDef != null))
         {
-            corpseMap[thing.race.corpseDef] = thing;
+            CorpseMap[thing.race.corpseDef] = thing;
         }
     }
 
-    public Icon(ThingDef thing)
+    private Icon(ThingDef thing)
     {
         thingDef = thing;
         if (thing == null)
@@ -73,7 +73,7 @@ public class Icon
         texture2D = thing.uiIcon == BaseContent.BadTex ? null : thing.uiIcon;
         textureColor = thing.uiIconColor;
 
-        if (texture2D == null && corpseMap.TryGetValue(thing, out var value))
+        if (texture2D == null && CorpseMap.TryGetValue(thing, out var value))
         {
             thingDef = thing = value;
             texture2D = thing.uiIcon == BaseContent.BadTex ? null : thing.uiIcon;
@@ -94,22 +94,23 @@ public class Icon
         texture = material.mainTexture;
     }
 
-    public Icon(Texture2D tex, bool isMissing = false)
+    private Icon(Texture2D tex, bool isMissing = false)
     {
         texture2D = tex;
         textureColor = Color.white;
         this.isMissing = isMissing;
     }
 
-    public Icon(string texPath, bool isMissing = false) : this(ContentFinder<Texture2D>.Get(texPath), isMissing)
+    private Icon(string texPath, bool isMissing = false) : this(ContentFinder<Texture2D>.Get(texPath), isMissing)
     {
     }
 
-    public bool Draw(Rect rect)
+    public void Draw(Rect rect)
     {
         if (material == null)
         {
-            return Draw2D(rect);
+            draw2D(rect);
+            return;
         }
 
         if (texture.width != texture.height && rect.width == rect.height)
@@ -129,14 +130,13 @@ public class Icon
 
 
         Graphics.DrawTexture(rect, texture, rect0011, 0, 0, 0, 0, new Color(1, 1, 1, GUI.color.a), material, -1);
-        return true;
     }
 
-    public bool Draw2D(Rect rect)
+    private void draw2D(Rect rect)
     {
         if (texture2D == null)
         {
-            return false;
+            return;
         }
 
         if (texture2D.width != texture2D.height && rect.width == rect.height)
@@ -156,14 +156,13 @@ public class Icon
 
         GUI.color = new Color(textureColor.r, textureColor.g, textureColor.b, GUI.color.a);
         GUI.DrawTexture(rect, texture2D);
-        return true;
     }
 
-    public static Icon getIcon(Def def)
+    public static Icon GetIcon(Def def)
     {
         if (def == null)
         {
-            return missing;
+            return Missing;
         }
 
         if (map.TryGetValue(def, out var res))
@@ -178,61 +177,63 @@ public class Icon
 
     private static Icon getIconWithoutCache(Def def)
     {
-        if (def is RecipeDef recipe)
+        switch (def)
         {
-            if (recipe.products != null)
+            case RecipeDef recipe:
             {
-                foreach (var item in recipe.products)
+                if (recipe.products != null)
                 {
-                    if (item.thingDef == null)
+                    foreach (var item in recipe.products)
+                    {
+                        if (item.thingDef == null)
+                        {
+                            continue;
+                        }
+
+                        return new Icon(item.thingDef);
+                    }
+                }
+
+                foreach (var ing in recipe.ingredients)
+                {
+                    if (ing == null)
                     {
                         continue;
                     }
 
-                    return new Icon(item.thingDef);
+                    if (!ing.IsFixedIngredient)
+                    {
+                        continue;
+                    }
+
+                    return new Icon(ing.FixedIngredient);
                 }
+
+                break;
             }
-
-            foreach (var ing in recipe.ingredients)
-            {
-                if (ing == null)
-                {
-                    continue;
-                }
-
-                if (!ing.IsFixedIngredient)
-                {
-                    continue;
-                }
-
-                return new Icon(ing.FixedIngredient);
-            }
+            case ThingDef thing:
+                return new Icon(thing);
         }
 
-        if (def is ThingDef thing)
-        {
-            return new Icon(thing);
-        }
-
-        return missing;
+        return Missing;
     }
 
-    public static Icon getIcon(RecipeDef recipe, IngredientCount ing)
+    public static Icon GetIcon(RecipeDef recipe, IngredientCount ing)
     {
         Icon res;
         if (ing == null)
         {
-            return missing;
+            return Missing;
         }
 
         if (ing.IsFixedIngredient)
         {
-            return getIcon(ing.FixedIngredient);
+            return GetIcon(ing.FixedIngredient);
         }
 
         if (ing.filter == null)
         {
-            return missing;
+            return Missing;
         }
 
         if (fieldCategories.GetValue(ing.filter) is string name)
@@ -243,7 +244,7 @@ public class Icon
             }
 
             var cat = DefDatabase<ThingCategoryDef>.GetNamed(name, false);
-            res = cat == null ? missing : new Icon(cat.icon);
+            res = cat == null ? Missing : new Icon(cat.icon);
 
             mapCats.Add(name, res);
             return res;
@@ -252,33 +253,33 @@ public class Icon
         var def = recipe.ProducedThingDef;
         if (def?.stuffCategories == null)
         {
-            return missing;
+            return Missing;
         }
 
         foreach (var cat in def.stuffCategories)
         {
             res = mapStuffCategoryIcons.TryGetValue(cat.defName);
-            if (res != missing && res != null)
+            if (res != Missing && res != null)
             {
                 return res;
             }
         }
 
-        return missing;
+        return Missing;
     }
 
-    public static Icon getVariableIcon(int num)
+    public static Icon GetVariableIcon(int num)
     {
         switch (num)
         {
             case 0:
-                return A;
+                return a;
             case 1:
-                return B;
+                return b;
             case 2:
-                return C;
+                return c;
             default:
-                return X;
+                return x;
         }
     }
 }

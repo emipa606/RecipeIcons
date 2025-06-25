@@ -1,0 +1,6 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Release" />
+  </Configurations>
+  <Project Path="RecipeIcons/RecipeIcons.csproj" />
+</Solution>

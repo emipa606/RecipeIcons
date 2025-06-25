@@ -4,14 +4,14 @@ using Verse;
 
 namespace RecipeIcons.Patch;
 
-[HarmonyPatch(typeof(FloatMenuOption), "DoGUI")]
-internal static class PatchFloatMenuOptionDoGUI
+[HarmonyPatch(typeof(FloatMenuOption), nameof(FloatMenuOption.DoGUI))]
+internal static class FloatMenuOption_DoGUI
 {
-    private static readonly RecipeTooltip tooltip = new RecipeTooltip();
+    private static readonly RecipeTooltip tooltip = new();
 
     private static void Postfix(FloatMenuOption __instance, Rect rect)
     {
-        if (!RecipeIcons.settings.enableTooltip)
+        if (!RecipeIcons.Settings.enableTooltip)
         {
             return;
         }

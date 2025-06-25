@@ -8,50 +8,51 @@ namespace RecipeIcons;
 
 internal class RecipeTooltip
 {
+    private const int IconSize = 28;
+
     private static readonly FieldInfo fieldShownItem =
         typeof(FloatMenuOption).GetField("shownItem", BindingFlags.NonPublic | BindingFlags.Instance);
 
-    private static readonly Dictionary<string, RecipeDef> recipeDatabase = new Dictionary<string, RecipeDef>();
+    private static readonly Dictionary<string, RecipeDef> recipeDatabase = new();
 
-    private static readonly Color ColorBGActive = new ColorInt(21, 25, 29).ToColor;
-    private static readonly Color ColorBorder = Color.white;
-    private static readonly Color ColorTextActive = Color.white;
-    private static readonly Color ColorTextIngCount = new Color(0.5f, 0.5f, 0.5f);
-    private static readonly Color ColorModName = new Color(0.5f, 0.5f, 0.5f);
-    private static readonly int iconSize = 28;
+    private static readonly Color colorBgActive = new ColorInt(21, 25, 29).ToColor;
+    private static readonly Color colorBorder = Color.white;
+    private static readonly Color colorTextActive = Color.white;
+    private static readonly Color colorTextIngCount = new(0.5f, 0.5f, 0.5f);
+    private static readonly Color colorModName = new(0.5f, 0.5f, 0.5f);
 
-    private readonly TextLayout layout = new TextLayout();
+    private readonly TextLayout layout = new();
     private readonly List<IconExplanation> needExplain = [];
 
-    private static string RecipeKey(RecipeDef def)
+    private static string recipeKey(RecipeDef def)
     {
         return (def.LabelCap + "|" + def.ProducedThingDef?.defName).Trim();
     }
 
-    private static string RecipeKey(FloatMenuOption option)
+    private static string recipeKey(FloatMenuOption option)
     {
         return (option.Label + "|" + (fieldShownItem.GetValue(option) as ThingDef)?.defName).Trim();
     }
 
-    private static string RecipeKeyFallback(FloatMenuOption option)
+    private static string recipeKeyFallback(FloatMenuOption option)
     {
         return $"{option.Label}|{null}";
     }
 
-    private static RecipeDef FindRecipe(FloatMenuOption option)
+    private static RecipeDef findRecipe(FloatMenuOption option)
     {
         if (recipeDatabase.Count != 0)
         {
-            return recipeDatabase.TryGetValue(RecipeKey(option)) ??
-                   recipeDatabase.TryGetValue(RecipeKeyFallback(option));
+            return recipeDatabase.TryGetValue(recipeKey(option)) ??
+                   recipeDatabase.TryGetValue(recipeKeyFallback(option));
         }
 
         foreach (var def in DefDatabase<RecipeDef>.AllDefs)
         {
-            recipeDatabase[RecipeKey(def)] = def;
+            recipeDatabase[recipeKey(def)] = def;
         }
 
-        return recipeDatabase.TryGetValue(RecipeKey(option)) ?? recipeDatabase.TryGetValue(RecipeKeyFallback(option));
+        return recipeDatabase.TryGetValue(recipeKey(option)) ?? recipeDatabase.TryGetValue(recipeKeyFallback(option));
     }
 
     public static bool IsRecipe(RecipeDef recipe)
@@ -61,12 +62,12 @@ internal class RecipeTooltip
 
     public static bool IsRecipe(FloatMenuOption option)
     {
-        return FindRecipe(option) != null;
+        return findRecipe(option) != null;
     }
 
     public void ShowAt(FloatMenuOption option, float x, float y)
     {
-        var recipe = FindRecipe(option);
+        var recipe = findRecipe(option);
         if (recipe == null)
         {
             return;
@@ -84,7 +85,7 @@ internal class RecipeTooltip
         }
 
         Find.WindowStack.ImmediateWindow(1265324534, rectMenu, WindowLayer.Super,
-            delegate { Draw(rectMenu.AtZero(), recipe); }, false);
+            delegate { draw(rectMenu.AtZero(), recipe); }, false);
     }
 
     private void Layout(RecipeDef recipe)
@@ -109,7 +110,7 @@ internal class RecipeTooltip
                 first = false;
             }
 
-            var icon = Icon.getIcon(recipe, ing);
+            var icon = Icon.GetIcon(recipe, ing);
             var count = ing.GetBaseCount();
 
             ThingDef def = null;
@@ -120,12 +121,9 @@ internal class RecipeTooltip
             else if (ing.filter?.AllowedThingDefs != null)
             {
                 def = ing.filter.AllowedThingDefs
-                    .FirstOrDefault(x => recipe.fixedIngredientFilter.Allows(x) && !x.smallVolume);
-                if (def == null)
-                {
-                    def = ing.filter.AllowedThingDefs
-                        .FirstOrDefault(x => recipe.fixedIngredientFilter.Allows(x));
-                }
+                    .FirstOrDefault(x => recipe.fixedIngredientFilter.Allows(x) && !x.smallVolume) ?? ing.filter
+                    .AllowedThingDefs
+                    .FirstOrDefault(x => recipe.fixedIngredientFilter.Allows(x));
             }
 
             if (def != null)
@@ -139,18 +137,18 @@ internal class RecipeTooltip
 
             if (count != 1)
             {
-                GUI.color = ColorTextIngCount * color;
+                GUI.color = colorTextIngCount * color;
                 layout.Text($"{count}x");
             }
 
             if (icon.isMissing)
             {
-                icon = icon == Icon.missing ? Icon.getVariableIcon(needExplain.Count) : icon;
+                icon = icon == Icon.Missing ? Icon.GetVariableIcon(needExplain.Count) : icon;
                 needExplain.Add(new IconExplanation { filter = ing.filter, icon = icon });
             }
 
-            GUI.color = ColorTextActive * color;
-            layout.Icon(icon, iconSize);
+            GUI.color = colorTextActive * color;
+            layout.Icon(icon, IconSize);
         }
 
         layout.Newline();
@@ -167,15 +165,11 @@ internal class RecipeTooltip
         {
             var defs = recipe.ingredients[0].filter.AllowedThingDefs;
 
-            example = defs.FirstOrDefault(x => recipe.fixedIngredientFilter.Allows(x) && x.butcherProducts != null);
-
-            if (example == null)
-            {
-                example = defs
-                    .Where(x => recipe.fixedIngredientFilter.Allows(x))
-                    .Select(x => Icon.corpseMap.TryGetValue(x))
-                    .FirstOrDefault(x => x?.butcherProducts != null);
-            }
+            example = defs.FirstOrDefault(x => recipe.fixedIngredientFilter.Allows(x) && x.butcherProducts != null) ??
+                      defs
+                          .Where(x => recipe.fixedIngredientFilter.Allows(x))
+                          .Select(x => Icon.CorpseMap.TryGetValue(x))
+                          .FirstOrDefault(x => x?.butcherProducts != null);
 
             products = example?.butcherProducts;
         }
@@ -198,19 +192,19 @@ internal class RecipeTooltip
 
                 if (res.count != 1)
                 {
-                    GUI.color = ColorTextIngCount * color;
+                    GUI.color = colorTextIngCount * color;
                     layout.Text($"{res.count}x");
                 }
 
-                GUI.color = ColorTextActive * color;
-                layout.Icon(Icon.getIcon(res.thingDef), iconSize);
+                GUI.color = colorTextActive * color;
+                layout.Icon(Icon.GetIcon(res.thingDef), IconSize);
             }
 
             if (example != null)
             {
                 GUI.color = color;
                 layout.Text($" ({"RecipeIconsRecipeTooltipExample".Translate()} ");
-                layout.Icon(Icon.getIcon(example), iconSize);
+                layout.Icon(Icon.GetIcon(example), IconSize);
                 GUI.color = color;
                 layout.Text(")");
             }
@@ -245,7 +239,7 @@ internal class RecipeTooltip
 
             for (var i = 0; i < needExplain.Count; i++)
             {
-                layout.Icon(needExplain[i].icon, iconSize);
+                layout.Icon(needExplain[i].icon, IconSize);
                 layout.Text($" {"RecipeIconsRecipeTooltipIsAnyOf".Translate()} ");
 
                 var displayedCount = 0;
@@ -254,11 +248,11 @@ internal class RecipeTooltip
                 {
                     if (displayedCount > 9)
                     {
-                        layout.Icon(Icon.More, iconSize);
+                        layout.Icon(Icon.More, IconSize);
                         break;
                     }
 
-                    layout.Icon(Icon.getIcon(def), iconSize);
+                    layout.Icon(Icon.GetIcon(def), IconSize);
                     displayedCount++;
                 }
 
@@ -267,7 +261,7 @@ internal class RecipeTooltip
         }
 
         GUI.color = Color.grey;
-        if (RecipeIcons.settings.showMod && recipe.modContentPack is { IsCoreMod: false })
+        if (RecipeIcons.Settings.showMod && recipe.modContentPack is { IsCoreMod: false })
         {
             layout.Text(recipe.modContentPack.Name);
 
@@ -279,17 +273,17 @@ internal class RecipeTooltip
     }
 
 
-    private void Draw(Rect rect, RecipeDef recipe)
+    private void draw(Rect rect, RecipeDef recipe)
     {
         var color = GUI.color;
 
-        GUI.color = ColorBGActive * color;
+        GUI.color = colorBgActive * color;
         GUI.DrawTexture(rect, BaseContent.WhiteTex);
 
-        GUI.color = ColorBorder * color;
+        GUI.color = colorBorder * color;
         Widgets.DrawAtlas(rect, TexUI.FloatMenuOptionBG);
 
-        GUI.color = ColorTextActive * color;
+        GUI.color = colorTextActive * color;
 
         GUI.color = color;
 

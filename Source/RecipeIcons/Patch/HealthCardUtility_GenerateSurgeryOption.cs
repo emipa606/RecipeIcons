@@ -6,7 +6,7 @@ using Verse;
 namespace RecipeIcons.Patch;
 
 [HarmonyPatch(typeof(HealthCardUtility), "GenerateSurgeryOption")]
-internal class PatchHealthCardUtility
+internal class HealthCardUtility_GenerateSurgeryOption
 {
     private static FloatMenuOption Postfix(FloatMenuOption option, RecipeDef recipe)
     {
@@ -14,23 +14,13 @@ internal class PatchHealthCardUtility
         var itemIconField = AccessTools.Field(typeof(FloatMenuOption), "itemIcon");
         var drawPlaceHolderIconField = AccessTools.Field(typeof(FloatMenuOption), "drawPlaceHolderIcon");
 
-        if (shownItemField.GetValue(option) != null)
+        if (shownItemField.GetValue(option) != null || itemIconField.GetValue(option) != null)
         {
             return option;
         }
 
-        if (itemIconField.GetValue(option) != null)
-        {
-            return option;
-        }
-
-        var icon = Icon.getIcon(recipe);
-        if (icon == Icon.missing)
-        {
-            return option;
-        }
-
-        if (icon.thingDef == null)
+        var icon = Icon.GetIcon(recipe);
+        if (icon == Icon.Missing || icon.thingDef == null)
         {
             return option;
         }

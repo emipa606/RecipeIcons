@@ -5,11 +5,11 @@ using Verse;
 namespace RecipeIcons.Patch;
 
 [HarmonyPatch(typeof(BillUtility), "LayoutTooltip")]
-internal static class PatchTooltipHandlerTipRegion
+internal static class BillUtility_LayoutTooltip
 {
     private static bool Prefix(RecipeDef recipe)
     {
-        if (!RecipeIcons.settings.enableTooltip)
+        if (!RecipeIcons.Settings.enableTooltip)
         {
             return true;
         }

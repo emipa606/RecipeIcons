@@ -15,9 +15,9 @@ public class TextLayout
 
     private bool measuring;
     public float padding;
-    public float startX;
-    public float x;
-    public float y;
+    private float startX;
+    private float x;
+    private float y;
     public float Width => calculatedWidth + padding;
     public float Height => calculatedHeight + lineHeight + padding;
 
@@ -30,11 +30,11 @@ public class TextLayout
         y = padding;
     }
 
-    public void StartDrawing(float x, float y)
+    public void StartDrawing(float width, float height)
     {
         measuring = false;
-        startX = this.x = x + padding;
-        this.y = y + padding;
+        startX = x = width + padding;
+        y = height + padding;
     }
 
     public void Text(string text)

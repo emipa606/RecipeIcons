@@ -1,0 +1,29 @@
+ManifestFileVersion: 0
+CRC: 4144417127
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e6e7376daedecec9e482d4ce7d20570d
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: 2612ac43db082a73502ee80f2eceb73f
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: e6e7376daedecec9e482d4ce7d20570d
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/Missing.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/X.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/Categories/Gemstone.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/Human.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/C.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/More.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/Categories/Woody.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/A.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/Categories/Metallic.png
+- Assets/Data/Mlie.RecipeIcons/Textures/RecipeIcons/B.png
+Dependencies: []
