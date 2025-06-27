@@ -8,28 +8,26 @@ namespace RecipeIcons.Patch;
 [HarmonyPatch(typeof(HealthCardUtility), "GenerateSurgeryOption")]
 internal class HealthCardUtility_GenerateSurgeryOption
 {
-    private static FloatMenuOption Postfix(FloatMenuOption option, RecipeDef recipe)
+    private static void Postfix(ref FloatMenuOption __result, RecipeDef recipe)
     {
         var shownItemField = AccessTools.Field(typeof(FloatMenuOption), "shownItem");
-        var itemIconField = AccessTools.Field(typeof(FloatMenuOption), "itemIcon");
+        var itemIconField = AccessTools.Field(typeof(FloatMenuOption), "iconThing");
         var drawPlaceHolderIconField = AccessTools.Field(typeof(FloatMenuOption), "drawPlaceHolderIcon");
 
-        if (shownItemField.GetValue(option) != null || itemIconField.GetValue(option) != null)
+        if (shownItemField.GetValue(__result) != null || itemIconField.GetValue(__result) != null)
         {
-            return option;
+            return;
         }
 
         var icon = Icon.GetIcon(recipe);
         if (icon == Icon.Missing || icon.thingDef == null)
         {
-            return option;
+            return;
         }
 
-        shownItemField.SetValue(option, icon.thingDef);
-        drawPlaceHolderIconField.SetValue(option, false);
-        option.iconColor = Color.white;
-        option.forceThingColor = Color.white;
-
-        return option;
+        shownItemField.SetValue(__result, icon.thingDef);
+        drawPlaceHolderIconField.SetValue(__result, false);
+        __result.iconColor = Color.white;
+        __result.forceThingColor = Color.white;
     }
 }
