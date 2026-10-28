@@ -9,7 +9,7 @@ internal static class FloatMenuOption_DoGUI
 {
     private static readonly RecipeTooltip tooltip = new();
 
-    private static void Postfix(FloatMenuOption __instance, Rect rect)
+    public static void Postfix(FloatMenuOption __instance, Rect rect)
     {
         if (!RecipeIcons.Settings.enableTooltip)
         {

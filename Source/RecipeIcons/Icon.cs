@@ -183,14 +183,14 @@ public class Icon
             {
                 if (recipe.products != null)
                 {
-                    foreach (var item in recipe.products)
+                    foreach (var thingDef in recipe.products.Select(item => item.thingDef))
                     {
-                        if (item.thingDef == null)
+                        if (thingDef == null)
                         {
                             continue;
                         }
 
-                        return new Icon(item.thingDef);
+                        return new Icon(thingDef);
                     }
                 }
 

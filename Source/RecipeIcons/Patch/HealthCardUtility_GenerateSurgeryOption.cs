@@ -6,9 +6,9 @@ using Verse;
 namespace RecipeIcons.Patch;
 
 [HarmonyPatch(typeof(HealthCardUtility), "GenerateSurgeryOption")]
-internal class HealthCardUtility_GenerateSurgeryOption
+internal static class HealthCardUtility_GenerateSurgeryOption
 {
-    private static void Postfix(ref FloatMenuOption __result, RecipeDef recipe)
+    public static void Postfix(ref FloatMenuOption __result, RecipeDef recipe)
     {
         var shownItemField = AccessTools.Field(typeof(FloatMenuOption), "shownItem");
         var itemIconField = AccessTools.Field(typeof(FloatMenuOption), "iconThing");

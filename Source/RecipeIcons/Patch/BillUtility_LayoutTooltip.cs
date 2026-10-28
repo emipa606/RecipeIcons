@@ -7,7 +7,7 @@ namespace RecipeIcons.Patch;
 [HarmonyPatch(typeof(BillUtility), "LayoutTooltip")]
 internal static class BillUtility_LayoutTooltip
 {
-    private static bool Prefix(RecipeDef recipe)
+    public static bool Prefix(RecipeDef recipe)
     {
         if (!RecipeIcons.Settings.enableTooltip)
         {
